@@ -1,34 +1,32 @@
 # Sem5_JIPP
 Projekt zręcznościowej gry sprzętowej opartej na platformie Micro:bit, wyposażonej w system zapisywania wyników i globalny ranking.
 
-```
-@startuml
-left to right direction
 
-package "Warstwa Gry" {
-  [Micro:bit - Gracz] as G1
-}
+Architektura
+```mermaid
+graph LR
+    subgraph Warstwa Gry
+        G1[Micro:bit - Gracz]
+    end
 
-package "Brama / Gateway" {
-  [Micro:bit - Odbiornik] as Odbiornik
-  [Arduino z Wi-Fi np. ESP32] as WiFi
-}
+    subgraph Brama / Gateway
+        Odbiornik[Micro:bit - Odbiornik]
+        WiFi[Arduino z Wi-Fi np. ESP32]
+    end
 
-package "Chmura / Backend" {
-  database "Baza Danych (Firebase)" as DB
-  [API serwera] as API
-}
+    subgraph Chmura / Backend
+        API[API serwera]
+        DB[(Baza Danych np. Firebase)]
+    end
 
-package "Prezentacja Wyników" {
-  [Strona Web - Ranking] as WWW
-  [Fizyczna Tablica - Arduino+LCD] as Fizyczny
-}
+    subgraph Prezentacja Wyników
+        Fizyczny[Fizyczna Tablica - Arduino+LCD]
+        WWW[Strona Web - Ranking]
+    end
 
-G1 -.-> Odbiornik : Micro:bit Radio
-Odbiornik --> WiFi : Kabel (UART)
-WiFi -.-> API : Internet (HTTP POST)
-API <--> DB
-API -.-> WWW : Internet (HTTP GET)
-API -.-> Fizyczny : Internet (HTTP GET)
-
-@enduml
+    G1 -- "Micro:bit Radio" --> Odbiornik
+    Odbiornik -- "Kabel (UART)" --> WiFi
+    WiFi -- "Internet (HTTP POST)" --> API
+    API <--> DB
+    API -- "Internet (HTTP GET)" --> Fizyczny
+    API -- "Internet (HTTP GET)" --> WWW
